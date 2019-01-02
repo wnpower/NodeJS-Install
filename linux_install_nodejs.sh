@@ -15,8 +15,8 @@ do
 
 	cd ~
 	
-	echo "Descargando $FILE..."
-	wget $FILE -O ./$FILE
+	echo "Descargando https://nodejs.org/dist/latest-$VERSION/$FILE..."
+	wget https://nodejs.org/dist/latest-$VERSION/$FILE -O ./$FILE
 
 	echo "Descomprimiendo $FILE..."
 	tar xvfz $FILE
