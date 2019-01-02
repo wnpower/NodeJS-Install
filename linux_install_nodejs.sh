@@ -41,7 +41,9 @@ do
 
 	echo "Comprobando instalación..."
 
+	echo -n "node --version: "
 	node --version
+	echo -n "npm --version: "
 	npm --version
 
 	echo "¡Listo!. Para más info y código de ejemplo ingresá a $ART_KB"
