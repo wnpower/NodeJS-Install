@@ -1,7 +1,7 @@
 #!/bin/bash
 ART_KB="https://help.wnpower.com/hc/es/articles/360018540771-Como-instalar-Node-js"
 
-NODE_VERSIONS=$(curl -s https://nodejs.org/dist/ | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/latest//g' | sed 's/\///g' | sed ':a;N;$!ba;s/\n/ /g')
+NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/latest//g' | sed 's/\///g' | sed ':a;N;$!ba;s/\n/ /g')
 
 if (echo "$NODE_VERSIONS" | grep "v.*/" > /dev/null); then
 	echo "No se puede conectar a https://nodejs.org/dist/, probá la instalación manual: $ART_KB"
@@ -9,7 +9,7 @@ fi
 
 select VERSION in $NODE_VERSIONS
 do
-	FILE=$(curl -s https://nodejs.org/dist/latest-$VERSION/ | sed 's/<[^>]\+>//g' | grep "linux-x64.tar.gz" | awk '{print $1}')
+	FILE=$(wget -O - https://nodejs.org/dist/latest-$VERSION/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "linux-x64.tar.gz" | awk '{print $1}')
 	BIN=$(echo $FILE | sed 's/.tar.gz$//')
 	echo "Se bajará $FILE..."
 
