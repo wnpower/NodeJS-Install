@@ -20,6 +20,18 @@ do
 
 	echo "Descomprimiendo $FILE..."
 	tar xvfz $FILE
+
+	if [ -d "./nodejs" ]; then
+		echo "Ya se detectó una instalación de Node.JS, reemplazar? [s/n]"
+		read PROMPT
+		if echo "$PROMPT" | grep -iq "^s"; then
+			rm -rf "./nodejs"
+		else
+			echo "Abortando."
+			exit 1
+		fi
+	fi
+
 	mv $BIN nodejs
 	rm -f $FILE
 
