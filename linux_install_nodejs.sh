@@ -7,6 +7,10 @@ if (echo "$NODE_VERSIONS" | grep "v.*/" > /dev/null); then
 	echo "No se puede conectar a https://nodejs.org/dist/, probá la instalación manual: $ART_KB"
 fi
 
+echo ""
+echo "Elije la versión de NodeJS a instalar:"
+echo ""
+
 select VERSION in $NODE_VERSIONS
 do
 	FILE=$(wget -O - https://nodejs.org/dist/latest-$VERSION/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "linux-x64.tar.gz" | awk '{print $1}')
@@ -32,6 +36,7 @@ do
 		fi
 	fi
 
+	rm -rf ./nodejs
 	mv $BIN nodejs
 	rm -f $FILE
 
@@ -39,8 +44,19 @@ do
 	cp nodejs/bin/node ~/bin
 	cd ~/bin
 	ln -s ../nodejs/lib/node_modules/npm/bin/npm-cli.js npm
+	chmod 755 ~/bin/*
 
 	echo "Agregando PATH..."
+
+	if [ ! -f ~/.bash_profile ]; then
+		echo ".bash_profile no detectado, creando.."
+		
+		cat << EOF > ~/.bash_profile
+		if [ -f ~/.bashrc ]; then
+  			. ~/.bashrc
+		fi
+EOF
+	fi
 
 	sed -i '/PATH=\$PATH:\$HOME\/bin/d' ~/.bashrc
 	sed -i '/export PATH/d' ~/.bashrc
@@ -51,14 +67,22 @@ do
 	PATH=$PATH:$HOME/bin
 	export PATH
 
+	. ~/.bashrc
+
 	echo "Comprobando instalación..."
 
 	echo -n "node --version: "
-	node --version
+	~/bin/node --version
 	echo -n "npm --version: "
-	npm --version
+	~/bin/npm --version
 
-	echo "¡Listo!. Para más info y código de ejemplo ingresá a $ART_KB"
+	echo "¡Listo!. Te recomendamos desloguearte y volver a conectarte a SSH/Terminal. Para más info y código de ejemplo ingresá a $ART_KB"
 
 	exit 1
 done
+
+echo "Limpiando..."
+
+rm -f $0
+
+echo "Listo!"
