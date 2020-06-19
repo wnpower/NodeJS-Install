@@ -68,6 +68,7 @@ EOF
 	export PATH
 
 	. ~/.bashrc
+	source ~/.bashrc
 
 	echo "Comprobando instalación..."
 
