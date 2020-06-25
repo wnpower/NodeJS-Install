@@ -79,7 +79,8 @@ EOF
 
 	echo "¡Listo!. Te recomendamos desloguearte y volver a conectarte a SSH/Terminal. Para más info y código de ejemplo ingresá a $ART_KB"
 
-done
+	# LIMPIAR SCRIPT
+	rm -f $0
 
-# LIMPIAR SCRIPT
-rm -f $0
+	exit 0
+done
