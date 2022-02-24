@@ -8,7 +8,7 @@ if (echo "$NODE_VERSIONS" | grep "v.*/" > /dev/null); then
 fi
 
 echo ""
-echo "Elije la versión de NodeJS a instala (se recomienda \"latest\"):"
+echo "Elije la versión de NodeJS a instalar (se recomienda \"latest\"):"
 echo ""
 
 select VERSION in $NODE_VERSIONS
