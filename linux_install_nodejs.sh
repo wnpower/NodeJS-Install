@@ -1,5 +1,6 @@
 #!/bin/bash
 ART_KB="https://help.wnpower.com/hc/es/articles/360018540771-Como-instalar-Node-js"
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' |sed ':a;N;$!ba;s/\n/ /g')
 
@@ -17,7 +18,7 @@ do
         if [ $VERSION = "latest" ]; then
                 VERSION_FINAL="latest"
         else
-                VERSION_FINAL=$VERSION
+                VERSION_FINAL="latest-$VERSION"
         fi
         FILE=$(wget -O - https://nodejs.org/dist/$VERSION_FINAL/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "linux-x64.tar.gz" | awk '{print $1}')
         BIN=$(echo $FILE | sed 's/.tar.gz$//')
@@ -31,25 +32,26 @@ do
         echo "Descomprimiendo $FILE..."
         tar xvfz $FILE
 
-        if [ -d "./nodejs" ]; then
+        if [ -d "~/nodejs" ]; then
                 echo "Ya se detectó una instalación de Node.JS, reemplazar? [s/n]"
                 read PROMPT
                 if echo "$PROMPT" | grep -iq "^s"; then
-                        rm -rf "./nodejs"
+                        rm -rf "~/nodejs"
                 else
                         echo "Abortando."
                         exit 1
                 fi
         fi
 
-        rm -rf ./nodejs
-        mv $BIN nodejs
+        rm -rf ~/nodejs
+        mv $BIN ~/nodejs
         rm -f $FILE
 
-        mkdir ~/bin
-        cp nodejs/bin/node ~/bin
+        mkdir ~/bin 2>/dev/null
         cd ~/bin
-        ln -s ../nodejs/lib/node_modules/npm/bin/npm-cli.js npm
+        rm -f ./node ./npm
+        ln -s ~/nodejs/bin/node node
+        ln -s ~/nodejs/lib/node_modules/npm/bin/npm-cli.js npm
         chmod 755 ~/bin/*
 
         echo "Agregando PATH..."
@@ -86,7 +88,7 @@ EOF
         echo "¡Listo!. Te recomendamos desloguearte y volver a conectarte a SSH/Terminal. Para más info y código de ejemplo ingresá a $ART_KB"
 
         # LIMPIAR SCRIPT
-        rm -f $0
+        rm -f $CWD/linux_install_nodejs.sh
 
         exit 0
 done
