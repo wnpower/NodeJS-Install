@@ -66,13 +66,13 @@ do
 EOF
         fi
 
-        sed -i '/PATH=\$PATH:\$HOME\/bin/d' ~/.bashrc
+        sed -i '/PATH=\$PATH:\$HOME\/bin:\$HOME\/nodejs\/bin/d' ~/.bashrc
         sed -i '/export PATH/d' ~/.bashrc
 
-        echo 'PATH=$PATH:$HOME/bin' >> ~/.bashrc
+        echo 'PATH=$PATH:$HOME/bin:$HOME/nodejs/bin' >> ~/.bashrc
         echo 'export PATH' >> ~/.bashrc
 
-        PATH=$PATH:$HOME/bin
+        PATH=$PATH:$HOME/bin:$HOME/nodejs/bin
         export PATH
 
         . ~/.bashrc
