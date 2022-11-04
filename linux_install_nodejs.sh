@@ -1,15 +1,26 @@
 #!/bin/bash
-ART_KB="https://help.wnpower.com/hc/es/articles/360018540771-Como-instalar-Node-js"
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' |sed ':a;N;$!ba;s/\n/ /g')
+ART_KB="https://help.wnpower.com/hc/es/articles/360018540771-Como-instalar-Node-js"
+
+# START
+
+LIBC_VERSION=$(ldd --version | head -n1 | awk '{ if($4 <= 2.25){ print "OLD" } else { echo "NEW" }}')
+
+if [ "$LIBC_VERSION" = "NEW" ]; then
+	NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' | sed ':a;N;$!ba;s/\n/ /g')
+else
+	# EN LIBC < 2.25 SOLO SOPORTA HASTA LA VERSION 17
+	NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' | grep "^v" | sed 's/^v//' | sed 's/.x$//' | awk '{ if($1 < 18) { print "v"$1".x" }}' | sed ':a;N;$!ba;s/\n/ /g')
+fi
 
 if (echo "$NODE_VERSIONS" | grep "v.*/" > /dev/null); then
         echo "No se puede conectar a https://nodejs.org/dist/, prueba la instalación manual: $ART_KB"
 fi
 
 echo ""
-echo "Elije la versión de NodeJS a instalar (se recomienda \"latest\"):"
+echo "Elije la versión de NodeJS a instalar:"
 echo ""
 
 select VERSION in $NODE_VERSIONS
