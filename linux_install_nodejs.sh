@@ -5,13 +5,13 @@ CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ART_KB="https://help.wnpower.com/hc/es/articles/360018540771-Como-instalar-Node-js"
 
 # START
+LIBC_VERSION=$(ldd --version | head -n1 | awk '{ print $4 }')
 
-LIBC_VERSION=$(ldd --version | head -n1 | awk '{ if($4 <= 2.25){ print "OLD" } else { echo "NEW" }}')
-
-if [ "$LIBC_VERSION" = "NEW" ]; then
+if (( $(echo "$LIBC_VERSION 2.25" | awk '{print ($1 > $2)}') )); then
+	# EN LIBC > 2.25 USO LAS ULTIMAS VERSIONES DE NODE
 	NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' | sed ':a;N;$!ba;s/\n/ /g')
 else
-	# EN LIBC < 2.25 SOLO SOPORTA HASTA LA VERSION 17
+	# EN LIBC <= 2.25 SOLO SOPORTA HASTA LA VERSION 17
 	NODE_VERSIONS=$(wget -O - https://nodejs.org/dist/ 2>/dev/null | sed 's/<[^>]\+>//g' | grep "latest.*/" | awk '{print $1}' | sed 's/latest-//g' | sed 's/\///g' | grep "^v" | sed 's/^v//' | sed 's/.x$//' | awk '{ if($1 < 18) { print "v"$1".x" }}' | sed ':a;N;$!ba;s/\n/ /g')
 fi
 
